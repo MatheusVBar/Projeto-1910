@@ -1,0 +1,27 @@
+
+#cloud-config
+package_update: true
+
+packages:
+  - docker.io
+  - git
+
+users:
+  - name: aluno
+    groups: [sudo, docker]
+    shell: /bin/bash
+    create_home: true
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+
+write_files:
+  - path: /home/aluno/bem-vindo.txt
+    owner: aluno:aluno
+    defer: true
+    permissions: '0644'
+    content: |
+      Bem-vindo ao laboratorio de Cloud-init!
+
+runcmd:
+  - systemctl enable --now docker
+  - chown -R aluno:aluno /home/aluno
+  - docker run -d --name grafana -p 3000:3000 grafana/grafana:latest
